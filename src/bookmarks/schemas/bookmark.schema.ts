@@ -1,21 +1,20 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import mongoose from 'mongoose';
 
-export type BookmarkDocument = HydratedDocument<Bookmark>;
+const bookmarkSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  url: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+  tags: {
+    type: [String],
+  },
+}, { timestamps: true });
 
-@Schema()
-export class Bookmark {
-  @Prop()
-  title: string;
-
-  @Prop()
-  description?: string;
-
-  @Prop()
-  url: string;
-
-  @Prop()
-  tags?: string[];
-}
-
-export const BookmarkSchema = SchemaFactory.createForClass(Bookmark);
+export const BookmarkSchema = mongoose.model('Bookmark', bookmarkSchema);

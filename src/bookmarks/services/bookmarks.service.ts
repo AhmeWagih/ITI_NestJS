@@ -1,40 +1,57 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookmark } from '../dto/CreateBookmark';
 import { UpdateBookmark } from '../dto/UpdateBookmark';
-import { Bookmark } from './../schemas/bookmark.schema';
+import { BookmarkSchema } from './../schemas/bookmark.schema';
 
 @Injectable()
 export class BookmarksService {
-  constructor(
-    @InjectModel(Bookmark.name) private bookmarkModel: Model<Bookmark>,
-  ) {}
-
   async getAllBookmarks() {
-    const bookmarks = await this.bookmarkModel.find();
-    return bookmarks;
+    try {
+      const bookmarks = await BookmarkSchema.find();
+      return bookmarks;
+    } catch (error) {
+      throw new HttpException(error.message, 500);
+    }
   }
 
   async getBookmark(id: string) {
-    const bookmark = await this.bookmarkModel.findById(id);
-    return bookmark;
+    try {
+      const bookmark = await BookmarkSchema.findById(id);
+      if (!bookmark) throw new NotFoundException('Bookmark not found');
+      return bookmark;
+    } catch (error) {
+      throw new HttpException(error.message, 500);
+    }
   }
 
   async createBookmark(Body: CreateBookmark) {
-    const bookmark = await this.bookmarkModel.create(Body);
-    return bookmark;
+    try {
+      const bookmark = await BookmarkSchema.create(Body);
+      return bookmark;
+    } catch (error) {
+      throw new HttpException(error.message, 500);
+    }
   }
 
   async updateBookmark(id: string, Body: UpdateBookmark) {
-    const bookmark = await this.bookmarkModel.findByIdAndUpdate(id, Body, {
-      new: true,
-    });
-    return bookmark;
+    try {
+      const bookmark = await BookmarkSchema.findByIdAndUpdate(id, Body, {
+        new: true,
+      });
+      if (!bookmark) throw new NotFoundException('Bookmark not found');
+      return bookmark;
+    } catch (error) {
+      throw new HttpException(error.message, 500);
+    }
   }
 
   async deleteBookmark(id: string) {
-    await this.bookmarkModel.findByIdAndDelete(id);
-    return { message: 'Bookmark deleted successfully' };
+    try {
+      const bookmark = await BookmarkSchema.findByIdAndDelete(id);
+      if (!bookmark) throw new NotFoundException('Bookmark not found');
+      return bookmark;
+    } catch (error) {
+      throw new HttpException(error.message, 500);
+    }
   }
 }

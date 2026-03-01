@@ -1,10 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-// import { ConnectToDB } from './bookmarks/utils/ConnectToDB';
+import { ConnectToDB } from './bookmarks/utils/ConnectToDB';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  // await ConnectToDB();
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
+  await ConnectToDB();
 }
 bootstrap();

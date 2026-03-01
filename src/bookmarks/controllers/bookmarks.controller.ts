@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Patch, Delete, Param, Body } from '@nestjs/common';
 import { BookmarksService } from '../services/bookmarks.service';
-import { type CreateBookmark } from '../dto/CreateBookmark';
-import { type UpdateBookmark } from '../dto/UpdateBookmark';
+import { CreateBookmark } from '../dto/CreateBookmark';
+import { UpdateBookmark } from '../dto/UpdateBookmark';
 
 @Controller('bookmarks')
 export class BookmarksController {
